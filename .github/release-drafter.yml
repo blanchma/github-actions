@@ -1,5 +1,27 @@
 name-template: 'v$RESOLVED_VERSION 🌈'
 tag-template: 'v$RESOLVED_VERSION'
+
+autolabeler:
+  - label: 'bug'
+    branch:
+      - '/fix\/.+/'
+    title:
+      - '/fix/i'
+    body:
+      - '/BUG/'
+  - label: 'enhancement'
+    branch:
+      - '/feature\/.+/'
+    body:
+      - '/MVP1-[0-9]{1,4}/'
+  - label: 'chore'
+    branch:
+      - '/chore\/.+/'
+    title:
+      - '/chore/i'
+    body:
+      - '/chore/i'
+
 categories:
   - title: '🚀 Features'
     labels:
