@@ -4,15 +4,17 @@ tag-template: 'v$RESOLVED_VERSION'
 autolabeler:
   - label: 'bug'
     branch:
-      - '/fix\/.+/'
+      - '/fix.+/'
     title:
       - '/fix/i'
     body:
       - '/BUG/'
   - label: 'enhancement'
+    title:
+      - '/MVP1-[0-9]{1,4}.+/i'
     branch:
-      - '/feature\/.+/'
-      - '/mvp\/.+/'
+      - '/feature.+/'
+      - '/mvp.+/'
     body:
       - '/MVP1-[0-9]{1,4}.+/i'
   - label: 'chore'
@@ -22,6 +24,7 @@ autolabeler:
       - '/chore/i'
     body:
       - '/chore/i'
+      - '/script/i'
 
 categories:
   - title: '🚀 Features'
