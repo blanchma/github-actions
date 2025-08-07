@@ -3,7 +3,8 @@ name: Publish Draft Release on Merge to Prod
 
 # Trigger configuration
 on:
-  workflow_run:
+  workflow_dispatch:
+    
     
   pull_request:
     # Runs only when a Pull Request is closed
