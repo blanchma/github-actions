@@ -3,6 +3,8 @@ name: Publish Draft Release on Merge to Prod
 
 # Trigger configuration
 on:
+  workflow_run:
+    
   pull_request:
     # Runs only when a Pull Request is closed
     types: [closed]
@@ -74,4 +76,5 @@ jobs:
 
           echo "Sending notification to Slack..."
           # Use curl to send the notification to the Slack webhook
+          echo $SLACK_PAYLOAD
           curl -X POST -H 'Content-type: application/json' --data "$SLACK_PAYLOAD" $SLACK_WEBHOOK_URL
