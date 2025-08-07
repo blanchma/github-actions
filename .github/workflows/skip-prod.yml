@@ -25,6 +25,7 @@ jobs:
     # Permissions required for the workflow to read and modify releases.
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout code
