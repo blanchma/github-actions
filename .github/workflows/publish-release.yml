@@ -36,7 +36,7 @@ jobs:
         run: |
           # We use the GitHub CLI (gh) to list releases.
           echo "Looking for the latest draft release..."
-          RELEASE_ID=$(gh release list --json isDraft,id --jq '.[] | select(.isDraft) | .id' | head -n 1)
+          RELEASE_ID=$(gh release list --json isDraft,tagName --jq '.[] | select(.isDraft) | .tagName' | head -n 1)
 
 
           # We check if a draft release was found.
