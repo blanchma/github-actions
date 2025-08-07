@@ -4,8 +4,8 @@ name: Publish Draft Release on Merge to Prod
 # Trigger configuration
 on:
   workflow_dispatch:
-    
-    
+
+
   pull_request:
     # Runs only when a Pull Request is closed
     types: [closed]
@@ -64,18 +64,16 @@ jobs:
           SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
           RELEASE_ID: ${{ steps.publish_step.outputs.release_id }}
         run: |
-          # Get the details of the newly published release
-          RELEASE_TAG=$(gh release view $RELEASE_ID --json tagName --jq '.tagName')
-          RELEASE_BODY=$(gh release view $RELEASE_ID --json body --jq '.body')
-          RELEASE_URL=$(gh release view $RELEASE_ID --json url --jq '.url')
+          # Get the details of the newly published release using its tag
+          RELEASE_BODY=$(gh release view $RELEASE_TAG --json body --jq '.body')
+          RELEASE_URL=$(gh release view $RELEASE_TAG --json url --jq '.url')
 
           # Prepare the payload for Slack, escaping special characters to make it a valid JSON
           CLEAN_BODY=$(echo "$RELEASE_BODY" | sed 's/"/\\"/g' | sed ':a;N;$!ba;s/\n/\\n/g')
 
-          # Create the message in JSON format for the Slack API
-          SLACK_PAYLOAD=$(printf '{"text": "🚀 *New Release Published: %s*\n\n%s\n\nView on GitHub: %s"}' "$RELEASE_TAG" "$CLEAN_BODY" "$RELEASE_URL")
+          # Create the JSON object for the Slack payload, including the channel.
+          JSON_PAYLOAD=$(printf '{"channel": "#release-notes", "username": "Release Bot", "icon_emoji": ":rocket:", "text": "🚀 *New Release Published: %s*\n\n%s\n\nView on GitHub: %s"}' "$RELEASE_TAG" "$CLEAN_BODY" "$RELEASE_URL")
 
           echo "Sending notification to Slack..."
-          # Use curl to send the notification to the Slack webhook
-          echo $SLACK_PAYLOAD
-          curl -X POST -H 'Content-type: application/json' --data "$SLACK_PAYLOAD" $SLACK_WEBHOOK_URL
+          # Use curl with --data-urlencode to send the payload correctly.
+          curl -X POST --data-urlencode "payload=$JSON_PAYLOAD" $SLACK_WEBHOOK_URL
