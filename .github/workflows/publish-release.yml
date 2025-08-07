@@ -61,7 +61,7 @@ jobs:
         if: steps.publish_step.outputs.release_id != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
+          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
           RELEASE_ID: ${{ steps.publish_step.outputs.release_id }}
         run: |
           # Get the details of the newly published release using its tag
