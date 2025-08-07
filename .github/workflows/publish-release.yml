@@ -11,7 +11,7 @@ on:
     types: [closed]
     # And only if the PR was targeting the 'prod' branch
     branches:
-      - 'prod'
+      - prod
 
 jobs:
   publish-release:
