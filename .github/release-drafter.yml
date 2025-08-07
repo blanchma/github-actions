@@ -19,12 +19,13 @@ autolabeler:
       - '/MVP1-[0-9]{1,4}.+/i'
   - label: 'chore'
     branch:
-      - '/chore\/.+/'
+      - '/chore.+/'
     title:
       - '/chore/i'
     body:
-      - '/chore/i'
       - '/script/i'
+      - '/maintenance/i'
+      - '/migration/i'
 
 categories:
   - title: '🚀 Features'
