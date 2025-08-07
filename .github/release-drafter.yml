@@ -11,12 +11,12 @@ autolabeler:
       - '/BUG/'
   - label: 'enhancement'
     title:
-      - '/MVP1-[0-9]{1,4}.+/i'
+      - '/MVP.+/i'
     branch:
       - '/feature.+/'
-      - '/mvp.+/'
+      - '/mvp.+/i'
     body:
-      - '/MVP1-[0-9]{1,4}.+/i'
+      - '/MVP.+/i'
   - label: 'chore'
     branch:
       - '/chore.+/'
