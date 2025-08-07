@@ -75,5 +75,6 @@ jobs:
           JSON_PAYLOAD=$(printf '{"channel": "#release-notes", "username": "Release Bot", "icon_emoji": ":rocket:", "text": "🚀 *New Release Published: %s*\n\n%s\n\nView on GitHub: %s"}' "$RELEASE_TAG" "$CLEAN_BODY" "$RELEASE_URL")
 
           echo "Sending notification to Slack..."
+          echo $JSON_PAYLOAD
           # Use curl with --data-urlencode to send the payload correctly.
           curl -X POST --data-urlencode "payload=$JSON_PAYLOAD" $SLACK_WEBHOOK_URL
