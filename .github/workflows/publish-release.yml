@@ -11,7 +11,7 @@ on:
     types: [closed]
     # And only if the PR was targeting the 'prod' branch
     branches:
-      - 'prod'
+      - prod
 
 jobs:
   publish-release:
@@ -27,11 +27,19 @@ jobs:
       contents: write
 
     steps:
-      # Step 1: Checkout the code (necessary for the job to have context of the repo)
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Logic to find and publish the draft release
+      - name: Add skip-changelog label
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "Pull Request #${PR_NUMBER} is targeting the 'prod' branch."
+          echo "Adding 'skip-changelog' label..."
+          gh pr edit $PR_NUMBER --add-label "skip-changelog"
+          echo "Label added successfully."
+
       - name: Find and Publish Latest Draft Release
         id: publish_step # An ID is added to reference the outputs of this step
         env:
@@ -55,13 +63,12 @@ jobs:
             echo "release_id=$RELEASE_ID" >> $GITHUB_OUTPUT # Set the ID as output for the next step
           fi
 
-      # Step 3: Send notification to Slack
       - name: Send notification to Slack
         # This step only runs if the previous step found and published a release
         if: steps.publish_step.outputs.release_id != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
+          SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
           RELEASE_ID: ${{ steps.publish_step.outputs.release_id }}
         run: |
           # Get the details of the newly published release using its tag

@@ -1,0 +1,42 @@
+# Name of the workflow that will appear in the "Actions" tab of GitHub
+name: Publish Draft Release on Merge to Prod
+
+# Trigger configuration
+on:
+  workflow_dispatch:
+
+
+  pull_request:
+    # Runs only when a Pull Request is closed
+    types: [opened]
+    # And only if the PR was targeting the 'prod' branch
+    branches:
+      - prod
+
+jobs:
+  publish-release:
+    # VERY IMPORTANT condition: The job will only run if the PR was actually merged.
+    # This prevents it from running if the PR is closed without merging.
+    if: github.event.pull_request.merged == true
+
+    # The type of virtual machine where the job will run
+    runs-on: ubuntu-latest
+
+    # Permissions required for the workflow to read and modify releases.
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Add skip-changelog label
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "Pull Request #${PR_NUMBER} is targeting the 'prod' branch."
+          echo "Adding 'skip-changelog' label..."
+          gh pr edit $PR_NUMBER --add-label "skip-changelog"
+          echo "Label added successfully."
+

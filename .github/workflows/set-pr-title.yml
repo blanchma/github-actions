@@ -5,7 +5,7 @@ on:
   pull_request:
     types: [opened]
     branches:
-    - 'sprint'
+    - sprint
 
 # Permissions required for the action to modify the PR (title and labels)
 permissions:
