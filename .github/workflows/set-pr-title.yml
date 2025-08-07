@@ -1,0 +1,64 @@
+name: Set PR Title and Label from MVP Commit
+
+# Triggers when a pull request is opened
+on:
+  pull_request:
+    types: [opened]
+
+# Permissions required for the action to modify the PR (title and labels)
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  set-title-and-label:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Clone the repository
+      # fetch-depth: 0 clones the entire history to access all commits
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # 2. Find the commit, update the title, and add the label
+      - name: Find MVP Commit, Set PR Title and Add Label
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Token to authenticate with the GitHub API
+          PR_NUMBER: ${{ github.event.number }}   # Current PR number
+        run: |
+          echo "Searching for commits in Pull Request #${PR_NUMBER}..."
+
+          # Get the list of commit SHAs in the PR, from oldest to newest (--reverse)
+          commit_hashes=$(git log origin/${{ github.base_ref }}..origin/${{ github.head_ref }} --reverse --pretty=format:"%H")
+
+          if [ -z "$commit_hashes" ]; then
+            echo "No commits found."
+            exit 0
+          fi
+
+          new_title=""
+          # Iterate over each commit to find the first one containing 'MVP' (case-insensitive)
+          for commit_sha in $commit_hashes; do
+            commit_message=$(git log -1 --pretty=format:%s%n%b "$commit_sha")
+
+            # Convert the message to lowercase for the comparison
+            if [[ "${commit_message,,}" == *mvp* ]]; then
+              echo "✅ Commit with 'MVP' found (case-insensitive): ${commit_sha:0:7}"
+              new_title=$commit_message
+              break # End the loop after finding the first match
+            fi
+          done
+
+          # If a title was found, update the PR and add the label
+          if [[ -n "$new_title" ]]; then
+            echo "Setting PR title to: '$new_title'"
+            gh pr edit $PR_NUMBER --title "$new_title"
+
+            echo "Adding 'enhancement' label..."
+            gh pr edit $PR_NUMBER --add-label "enhancement"
+
+            echo "🎉 PR title and label updated successfully!"
+          else
+            echo "No commit with 'MVP' was found. No changes were made."
+          fi
