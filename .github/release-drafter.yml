@@ -23,8 +23,9 @@ autolabeler:
     title:
       - '/chore/i'
     body:
-      - '/chore/i'
       - '/script/i'
+      - '/maintenance/i'
+      - '/migration/i'
 
 categories:
   - title: '🚀 Features'
