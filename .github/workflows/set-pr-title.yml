@@ -4,6 +4,8 @@ name: Set PR Title and Label from MVP Commit
 on:
   pull_request:
     types: [opened]
+    branches:
+    - 'sprint'
 
 # Permissions required for the action to modify the PR (title and labels)
 permissions:
