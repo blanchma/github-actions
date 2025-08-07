@@ -1,0 +1,35 @@
+# Name of the workflow that will appear in the "Actions" tab of GitHub
+name: Label PRs targeting prod
+
+# Trigger configuration
+on:
+  pull_request:
+    # Runs when a PR is opened or when new commits are pushed to it
+    types:
+      - opened
+      - synchronize
+    # And only if the PR is targeting the 'prod' branch
+    branches:
+      - prod
+
+jobs:
+  add-label:
+    # The type of virtual machine where the job will run
+    runs-on: ubuntu-latest
+
+    # Permissions required for the workflow to add labels to a pull request.
+    permissions:
+      pull-requests: write
+
+    steps:
+      # This step adds the label using the GitHub CLI
+      - name: Add skip-changelog label
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          echo "Pull Request #${PR_NUMBER} is targeting the 'prod' branch."
+          echo "Adding 'skip-changelog' label..."
+          gh pr edit $PR_NUMBER --add-label "skip-changelog"
+          echo "Label added successfully."
+
